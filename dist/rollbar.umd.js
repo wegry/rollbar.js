@@ -5383,11 +5383,13 @@ Instrumenter.prototype.instrumentConsole = function() {
     var origConsole = c;
     var level = method === 'warn' ? 'warning' : method;
     c[method] = function() {
+      console.debug('preformat', arguments);
       var args = Array.prototype.slice.call(arguments);
       var message = _.formatArgsAsString(args);
       self.telemeter.captureLog(message, level);
       if (orig) {
-        Function.prototype.apply.call(orig, origConsole, args);
+          console.debug(arguments, message);
+          Function.prototype.apply.call(orig, origConsole, args);
       }
     };
     self.replacements['log'].push([method, orig]);
